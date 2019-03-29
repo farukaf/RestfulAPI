@@ -35,7 +35,11 @@ namespace RestfulAPI.Controllers
         {
             model.SecurityStamp = Guid.NewGuid().ToString();
 
-            var result = await _userManager.CreateAsync(model, model.Password);
+            var password = model.Password;
+            //To remove password from table... comment to save password on database
+            model.Password = null;
+
+            var result = await _userManager.CreateAsync(model, password);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(model, "Customer");

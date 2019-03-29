@@ -71,6 +71,9 @@ namespace RestfulAPI.Controllers
                 user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
                 user.Email = model.Email;
                 user.Name = model.Name;
+                
+                //To remove password from table... change  to save password on database
+                user.Password = null;
                 var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
@@ -94,9 +97,13 @@ namespace RestfulAPI.Controllers
         {
             model.SecurityStamp = Guid.NewGuid().ToString();
 
-            var result = await _userManager.CreateAsync(model, model.Password);
+            var password = model.Password;
+            //To remove password from table... comment to save password on database
+            model.Password = null;
+
+            var result = await _userManager.CreateAsync(model, password);
             if (result.Succeeded)
-            {
+            {                
                 await _userManager.AddToRoleAsync(model, "Customer");
             }
             else
